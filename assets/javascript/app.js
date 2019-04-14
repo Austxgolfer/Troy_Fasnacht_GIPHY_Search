@@ -19,14 +19,17 @@ function apiCall(param) {
         url: queryLink,
         method: "GET",
     }).then (function(response){
+        console.log(response);
         $("#gifdisplay").prepend(response.data.map(displayGifs));
-
+        
     });
 
 } //end of function for ajax call
 
 function displayGifs(gif,i) {
-return `<div><p>Rating: ${gif.rating}</p><img src="${gif.images.fixed_height.url}"/></div>`;
+ var gifid = "gif" + i
+ console.log(gifid);
+return `<div id="${gifid}"><p>Rating: ${gif.rating}</p><img src="${gif.images.downsized_still.url}" data-still="${gif.images.downsized_still.url}" data-animate="${gif.images.fixed_height.url}" data-state="still" class="gif"></div>`;
 
 }; //end of function to put gifs on page
 
@@ -41,8 +44,6 @@ function buttonHtml(topicData) {
 
 };//end of function to format HTML for buttons
 
-
-
 makeButton(topics);
 
 $(document.body).on("click","[id^=button]",function() {
@@ -56,8 +57,21 @@ $("#submit").on("click",function(event) {
     console.log(input);
     $("#btnrow1").append(buttonHtml(input));
     $("#srchparam").val(" ");
-});    
+});   
 
+$(document.body).on("click",".gif",function(event){
+    console.log("buttonclisk");
+    var datastate = $(this).attr(`data-state`)
+    console.log(datastate);
+    if ($(this).attr(`data-state`) === "still") {
+        $(this).attr(`data-state`,"animate"); //changes state to animated
+        $(this).attr(`src`,$(this).attr(`data-animate`));//changes src to animated link
+      }
+      else {$(this).attr(`data-state`,"still"); // changes state to still
+        $(this).attr(`src`,$(this).attr(`data-still`)); // changes src to still image link
+
+      };
+}); //animate button click
 
 
 //javascipt to run the page
